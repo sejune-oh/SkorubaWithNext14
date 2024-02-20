@@ -36,8 +36,8 @@ namespace Skoruba.Duende.IdentityServer.Admin
 
                 var host = CreateHostBuilder(args).Build();
 
-                var migrationComplete = await ApplyDbMigrationsWithDataSeedAsync(args, configuration, host);
-                if (await MigrateOnlyOperationAsync(args, host, migrationComplete)) return;
+                /*var migrationComplete = await ApplyDbMigrationsWithDataSeedAsync(args, configuration, host);
+                if (await MigrateOnlyOperationAsync(args, host, migrationComplete)) return;*/
 
                 await host.RunAsync();
             }
