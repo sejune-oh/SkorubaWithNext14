@@ -108,7 +108,7 @@ namespace Skoruba.Duende.IdentityServer.Admin
             configurationBuilder.AddCommandLine(args);
             configurationBuilder.AddEnvironmentVariables();
 
-            return configurationBuilder.Build();
+            return configurationBuilder.Build(); 
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

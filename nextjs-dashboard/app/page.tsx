@@ -1,13 +1,20 @@
 'use client';
 
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import style from '@/app/ui/home.module.css';
-import Link from 'next/link';
-import AcmeLogo from './ui/acme-logo';
 import Image from 'next/image';
 import { authenticate } from './lib/actions';
+import AcmeLogo from './ui/acme-logo';
 
 export default function Page() {
+  const signInBtnHandler = async () => {
+    try {
+      console.log('click');
+      await authenticate();
+    } catch (error) {
+      console.log('[Sign in ERROR]:', error);
+    }
+  };
+
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
@@ -26,19 +33,12 @@ export default function Page() {
           <div className={style.shape}></div>
           {/* Tailwind */}
           {/* <div className="h-0 w-0 border-b-[30px] border-l-[20px] border-r-[20px] border-b-black border-l-transparent border-r-transparent" /> */}
-          <Link
-            href="/login"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+          <button
+            className='className="flex md:text-base" items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400'
+            onClick={signInBtnHandler}
           >
-            <button
-              onClick={async () => {
-                await authenticate();
-              }}
-            >
-              Log in
-            </button>{' '}
-            <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
+            Log in
+          </button>{' '}
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           {/* Add Hero Images Here */}

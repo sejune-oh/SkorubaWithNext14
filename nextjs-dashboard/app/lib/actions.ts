@@ -3,7 +3,8 @@ import { AuthError } from 'next-auth';
 
 export async function authenticate() {
   try {
-    await signIn('cloudHospital');
+    const data: any = await signIn('cloudhospital');
+    console.log('[DEBUG]:', data);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
