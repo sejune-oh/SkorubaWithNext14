@@ -1,6 +1,10 @@
-import { ReactNode } from 'react';
+import { auth } from '@/auth';
 
-function Page(): ReactNode {
+async function Page() {
+  const data = await auth();
+
+  console.log(data?.user);
+
   return <div>Dashboard page</div>;
 }
 

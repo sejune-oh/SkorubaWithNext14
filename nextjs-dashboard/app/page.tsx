@@ -2,14 +2,13 @@
 
 import style from '@/app/ui/home.module.css';
 import Image from 'next/image';
-import { authenticate } from './lib/actions';
 import AcmeLogo from './ui/acme-logo';
+import { signIn } from 'next-auth/react';
 
-export default function Page() {
+export default async function Page() {
   const signInBtnHandler = async () => {
     try {
-      console.log('click');
-      await authenticate();
+      await signIn('cloudhospital');
     } catch (error) {
       console.log('[Sign in ERROR]:', error);
     }

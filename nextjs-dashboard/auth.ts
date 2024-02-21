@@ -1,27 +1,29 @@
 import NextAuth from 'next-auth';
 import duendeIdentityServer6 from 'next-auth/providers/duende-identity-server6';
 import authConfig from './app/auth.config';
-import { ISSUER, REDIRECT_URL, SCOPE } from './app/lib/constants';
 
-// settup env values
-export const { signIn, signOut, auth } = NextAuth({
+if (process.env.STAGE === 'dev') {
+}
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
     duendeIdentityServer6({
       id: 'cloudhospital',
-      name: 'Cloudhospital',
+      name: 'CloudHospital',
       authorization: {
         params: {
-          scope: SCOPE,
-          redirect_uri: REDIRECT_URL,
+          scope:
+            'openid email profile roles CloudHospital_admin_api CloudHospital_SignalR IdentityServerApi offline_access IdentityServerAdmin_api',
+          redirect_uri: 'http://localhost:3000/api/auth/callback/CloudHospital',
         },
       },
-      wellKnown: `${ISSUER}/.well-known/openid-configuration`,
+      wellKnown: `https://localhost:44310/.well-known/openid-configuration`,
       userinfo: {
-        url: `${ISSUER}/connect/userinfo`,
+        url: `https://localhost:44310/connect/userinfo`,
       },
-      issuer: ISSUER,
-      async profile(profile, tokens) {
+      async profile(profile, token) {
         return {
           id: profile.sub,
           role: profile.role,
@@ -38,10 +40,13 @@ export const { signIn, signOut, auth } = NextAuth({
             params,
             checks,
           );
-
           return { tokens };
         },
       },
+      //issuer: process.env.AUTH_DUENDEIDENTITYSERVER6_ISSUER,
+      issuer: 'https://localhost:44310',
+      clientId: 'CloudHospitalAdminClient',
+      clientSecret: 'CloudHospitalAdminClientSecret',
     }),
   ],
 });

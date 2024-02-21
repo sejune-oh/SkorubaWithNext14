@@ -1,8 +1,13 @@
-import { ReactNode } from 'react';
+'use client';
+import { auth } from '@/auth';
 
 interface Params {}
 
-function Page({}: Params): ReactNode {
+async function Page({}: Params) {
+  const data = await auth();
+
+  console.log('Data', data);
+
   return <div>Customer Page</div>;
 }
 
