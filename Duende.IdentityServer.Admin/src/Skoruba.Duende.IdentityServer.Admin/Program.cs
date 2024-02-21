@@ -17,7 +17,7 @@ using Skoruba.Duende.IdentityServer.Shared.Configuration.Helpers;
 
 namespace Skoruba.Duende.IdentityServer.Admin
 {
-	public class Program
+    public class Program
     {
         private const string SeedArgs = "/seed";
         private const string MigrateOnlyArgs = "/migrateonly";
@@ -108,7 +108,7 @@ namespace Skoruba.Duende.IdentityServer.Admin
             configurationBuilder.AddCommandLine(args);
             configurationBuilder.AddEnvironmentVariables();
 
-            return configurationBuilder.Build(); 
+            return configurationBuilder.Build();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

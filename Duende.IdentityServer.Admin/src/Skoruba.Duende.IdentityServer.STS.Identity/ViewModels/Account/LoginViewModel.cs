@@ -15,7 +15,7 @@ namespace Skoruba.Duende.IdentityServer.STS.Identity.ViewModels.Account
     {
         public bool AllowRememberLogin { get; set; } = true;
         public bool EnableLocalLogin { get; set; } = true;
-        public LoginResolutionPolicy LoginResolutionPolicy { get; set; } = LoginResolutionPolicy.Username;
+        public LoginResolutionPolicy LoginResolutionPolicy { get; set; } = LoginResolutionPolicy.Email;
 
         public IEnumerable<ExternalProvider> ExternalProviders { get; set; } = Enumerable.Empty<ExternalProvider>();
         public IEnumerable<ExternalProvider> VisibleExternalProviders => ExternalProviders.Where(x => !String.IsNullOrWhiteSpace(x.DisplayName));
@@ -23,4 +23,4 @@ namespace Skoruba.Duende.IdentityServer.STS.Identity.ViewModels.Account
         public bool IsExternalLoginOnly => EnableLocalLogin == false && ExternalProviders?.Count() == 1;
         public string ExternalLoginScheme => IsExternalLoginOnly ? ExternalProviders?.SingleOrDefault()?.AuthenticationScheme : null;
     }
-}
+} 
