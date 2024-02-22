@@ -5,6 +5,7 @@ const authConfig: NextAuthConfig = {
   callbacks: {
     async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
+      console.log(auth);
       const isOnDashBoard = nextUrl.pathname.startsWith('/dashboard');
       if (!auth) {
         return false;
@@ -23,7 +24,10 @@ const authConfig: NextAuthConfig = {
     async signIn({ user, account, profile, email, credentials }) {
       return user ? true : false;
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
+      // console.log('[DEBUG] session!!', session);
+      // console.log('[DEBUG] token!!', token);
+      // console.log('[DEBUG] token!!', user);
       return session;
     },
     async redirect({ url, baseUrl }) {
@@ -32,7 +36,13 @@ const authConfig: NextAuthConfig = {
       return baseUrl;
     },
     async jwt(params) {
-      const { token, account } = params;
+      const { token, account, user, profile, session } = params;
+      // console.log('[DEBUG] token', token);
+      // console.log('[DEBUG] account', account);
+      // console.log('[DEBUG] user', user);
+      // console.log('[DEBUG] profile', profile);
+      // console.log('[DEBUG] session', session);
+
       return token;
     },
   },

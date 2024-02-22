@@ -1,8 +1,12 @@
-import NextAuth from 'next-auth';
+import NextAuth, { User } from 'next-auth';
 import DuendeIdentityServer6 from 'next-auth/providers/duende-identity-server6';
 import authConfig from './app/auth.config';
+import axios from 'axios';
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+//! active when test on local environment
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+const issuer = process.env.AUTH_DUENDEIDENTIYSERVER6_ISSUER;
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -10,29 +14,53 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     DuendeIdentityServer6({
       id: 'cloudhospital',
       name: 'CloudHospital',
-      clientId: 'CloudHospitalAdminClient',
-      clientSecret: 'CloudHospitalAdminClientSecret',
-      issuer: `${process.env.auth_duendeidentityserver6_issuer}`,
-      wellKnown: `${process.env.auth_duendeidentityserver6_issuer}/.well-known/openid-configuration`,
+      clientId: process.env.AUTH_DUENDEIDENTIYSERVER6_CLIENT_ID,
+      clientSecret: process.env.AUTH_DUENDEIDENTIYSERVER6_CLIENT_SECRET,
+      issuer: `${issuer}`,
+      wellKnown: `${issuer}/.well-known/openid-configuration`,
       userinfo: {
-        url: `${process.env.auth_duendeidentityserver6_issuer}/connect/userinfo`,
+        url: `${issuer}/connect/userinfo`,
       },
       token: {
-        url: `${process.env.auth_duendeidentityserver6_issuer}/connect/token`,
+        url: `${issuer}/connect/token`,
       },
       authorization: {
-        params: process.env.AUTH_DUENDEIDENTITYSERVER6_SCOPE,
+        params: {
+          scope: process.env.AUTH_DUENDEIDENTITYSERVER6_SCOPE,
+        },
         redirect_uri: 'http://localhost:3000/api/auth/callback/CloudHospital',
       },
       async profile(profile, token) {
-        return {
-          id: profile.sub,
-          role: profile.role,
-          preferred_username: profile.preferred_username,
-          name: profile.name,
-          email: profile.email,
-          email_verified: profile.email_verified,
-        };
+        const { access_token } = token;
+        console.log('[DEBUG]', profile);
+
+        try {
+          // get user info
+          const res = await axios({
+            method: 'GET',
+            headers: {
+              Accept: '*/*',
+              Authorization: `Bearer ${access_token}`,
+            },
+            url: `${issuer}/connect/userinfo`,
+          });
+          const userInfo = res.data;
+
+          const user: User = {
+            id: profile.sub,
+            role: userInfo.role,
+            name: userInfo.name,
+            email: userInfo.email,
+            preferred_username: userInfo.preferred_username,
+            email_verified: userInfo.email_verified,
+          };
+
+          return user;
+        } catch (error) {
+          console.log(error);
+        }
+
+        return profile;
       },
       //#region the other options
       // account: () => {},

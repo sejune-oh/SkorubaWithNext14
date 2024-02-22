@@ -18,6 +18,8 @@ declare module 'next-auth' {
    */
   interface User {
     phone?: string;
-    role: Array<string>;
+    role?: Array<string> | string;
+    preferred_username?: string;
+    email_verified?: boolean;
   }
 }

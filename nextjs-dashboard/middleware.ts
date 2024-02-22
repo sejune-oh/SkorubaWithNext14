@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import authConfig from './app/auth.config';
 
 // 페이지 렌더링 이전의 실행되는 미들웨어
-console.log('[Middleware Called');
+console.log('[Middleware Called]');
 
 export const { auth: middleware } = NextAuth(authConfig);
 

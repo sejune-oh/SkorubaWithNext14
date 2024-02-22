@@ -3,8 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-const secret = process.env.NEXTAUTH_SECRET;
-
 export async function GET(request: NextApiRequest, response: NextApiResponse) {
   try {
     // const { id_token } = body;
