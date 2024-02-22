@@ -1,14 +1,9 @@
-'use client';
-import { auth } from '@/auth';
-
-interface Params {}
-
-async function Page({}: Params) {
-  const data = await auth();
-
-  console.log('Data', data);
-
-  return <div>Customer Page</div>;
+function Page() {
+  return (
+    <div>
+      <h2>Customer Page</h2>
+    </div>
+  );
 }
 
 export default Page;

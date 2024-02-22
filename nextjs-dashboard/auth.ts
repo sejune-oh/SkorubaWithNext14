@@ -1,27 +1,25 @@
 import NextAuth from 'next-auth';
-import duendeIdentityServer6 from 'next-auth/providers/duende-identity-server6';
+import DuendeIdentityServer6 from 'next-auth/providers/duende-identity-server6';
 import authConfig from './app/auth.config';
 
-if (process.env.STAGE === 'dev') {
-}
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
-    duendeIdentityServer6({
+    DuendeIdentityServer6({
       id: 'cloudhospital',
       name: 'CloudHospital',
-      authorization: {
-        params: {
-          scope:
-            'openid email profile roles CloudHospital_admin_api CloudHospital_SignalR IdentityServerApi offline_access IdentityServerAdmin_api',
-          redirect_uri: 'http://localhost:3000/api/auth/callback/CloudHospital',
-        },
-      },
-      wellKnown: `https://localhost:44310/.well-known/openid-configuration`,
+      clientId: 'CloudHospitalAdminClient',
+      clientSecret: 'CloudHospitalAdminClientSecret',
+      issuer: `${process.env.auth_duendeidentityserver6_issuer}`,
+
+      wellKnown: `${process.env.auth_duendeidentityserver6_issuer}/.well-known/openid-configuration`,
       userinfo: {
-        url: `https://localhost:44310/connect/userinfo`,
+        url: `${process.env.auth_duendeidentityserver6_issuer}/connect/userinfo`,
+      },
+      token: {
+        url: `${process.env.auth_duendeidentityserver6_issuer}/connect/token`,
       },
       async profile(profile, token) {
         return {
@@ -33,20 +31,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email_verified: profile.email_verified,
         };
       },
-      token: {
-        async request({ client, provider, params, checks }: any) {
-          const tokens = await client.callback(
-            provider.callbackUrl,
-            params,
-            checks,
-          );
-          return { tokens };
-        },
-      },
-      //issuer: process.env.AUTH_DUENDEIDENTITYSERVER6_ISSUER,
-      issuer: 'https://localhost:44310',
-      clientId: 'CloudHospitalAdminClient',
-      clientSecret: 'CloudHospitalAdminClientSecret',
+      //#region the other options
+      // account: () => {},
+      // checks: ['pkce'],
+      // allowDangerousEmailAccountLinking: false,
+      // redirectProxyUrl: undefined,
+      //#endregion the other options
     }),
   ],
 });

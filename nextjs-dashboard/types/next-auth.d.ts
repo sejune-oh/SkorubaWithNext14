@@ -11,3 +11,15 @@ declare module 'next-auth' {
     };
   }
 }
+
+declare module 'next-auth' {
+  /**
+   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+   */
+  interface User {
+    user: {
+      /** The user's postal address. */
+      phone: string;
+    };
+  }
+}

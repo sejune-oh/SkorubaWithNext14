@@ -1,5 +1,6 @@
 import '@/app/ui/global.css';
 import fonts from './ui/font';
+import { SessionProvider } from 'next-auth/react';
 
 export default function RootLayout({
   children,
@@ -8,7 +9,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${fonts.inter.className} antialiased`}>{children}</body>
+      <SessionProvider>
+        <body className={`${fonts.inter.className} antialiased`}>
+          {children}
+        </body>
+      </SessionProvider>
     </html>
   );
 }

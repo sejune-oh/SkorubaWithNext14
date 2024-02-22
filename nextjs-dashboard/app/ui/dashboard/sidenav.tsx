@@ -4,11 +4,7 @@ import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
 
 export default function SideNav() {
-  const signedOutBtnHandler = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-  };
+  const onSignedOutClickHandler = () => {};
 
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
@@ -24,11 +20,12 @@ export default function SideNav() {
         <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form>
-          <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+          <button
+            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+            onClick={onSignedOutClickHandler}
+          >
             <PowerIcon className="w-6" />
-            <button className="hidden md:block" onClick={signedOutBtnHandler}>
-              Sign Out
-            </button>
+            Signed Out
           </button>
         </form>
       </div>

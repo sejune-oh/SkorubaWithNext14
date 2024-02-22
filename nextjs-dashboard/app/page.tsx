@@ -3,9 +3,14 @@
 import style from '@/app/ui/home.module.css';
 import Image from 'next/image';
 import AcmeLogo from './ui/acme-logo';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default async function Page() {
+export default function Page() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
   const signInBtnHandler = async () => {
     try {
       await signIn('cloudhospital');
@@ -13,6 +18,12 @@ export default async function Page() {
       console.log('[Sign in ERROR]:', error);
     }
   };
+
+  useEffect(() => {
+    if (session) {
+      router.push('/dashboard');
+    }
+  }, [session]);
 
   return (
     <main className="flex min-h-screen flex-col p-6">
@@ -33,11 +44,11 @@ export default async function Page() {
           {/* Tailwind */}
           {/* <div className="h-0 w-0 border-b-[30px] border-l-[20px] border-r-[20px] border-b-black border-l-transparent border-r-transparent" /> */}
           <button
-            className='className="flex md:text-base" items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400'
+            className='md:text-base" flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400'
             onClick={signInBtnHandler}
           >
             Log in
-          </button>{' '}
+          </button>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           {/* Add Hero Images Here */}

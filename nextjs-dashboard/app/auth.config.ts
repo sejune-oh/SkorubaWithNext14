@@ -3,26 +3,24 @@ import { CLIENT_SECRET } from './lib/constants';
 
 const authConfig: NextAuthConfig = {
   callbacks: {
-    // async authorized({ auth, request: { nextUrl } }) {
-    // console.log('[DEBUG] auth', auth);
-    // console.log('[DEBUG] auth', nextUrl);
-
-    // const isLoggedIn = !!auth?.user;
-    // const isOnDashBoard = nextUrl.pathname.startsWith('/dashboard');
-
-    // if (isOnDashBoard) {
-    //   return isLoggedIn ? true : false;
-    // } else if (isLoggedIn) {
-    //   return Response.redirect(new URL('/dashboard', nextUrl));
-    // }
-    // console.log('[Authorized Call]');
-    // console.log('[DEBUG] auth', auth);
-    // console.log('[DEBUG] auth', nextUrl);
-
-    // return true;
-    // },
+    async authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnDashBoard = nextUrl.pathname.startsWith('/dashboard');
+      if (!auth) {
+        return false;
+      } else {
+        if (isOnDashBoard) {
+          if (isLoggedIn) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return Response.redirect(new URL('/dashboard', nextUrl));
+        }
+      }
+    },
     async signIn({ user, account, profile, email, credentials }) {
-      console.log('[Callback Sign-IN]', user);
       return user ? true : false;
     },
     async session({ session, token }) {
@@ -46,7 +44,7 @@ const authConfig: NextAuthConfig = {
   },
   logger: {
     error(code, ...message) {
-      console.log(`[ERROR] CODE`, {
+      console.log(`[ERROR LOGGER] CODE`, {
         cause: code.cause,
         name: code.name,
         stack: code.stack,
@@ -54,24 +52,33 @@ const authConfig: NextAuthConfig = {
       });
     },
     warn(code, ...message) {
-      console.log(`[WARN] ${code}`, message);
+      console.log(`[WARN LOGGER] ${code}`, message);
     },
     debug(code, ...message) {
-      // console.log(`[DEBUG] ${code}`, message);
+      if (process.env.AUTH_DEBUGGER_LOGGER === 'active') {
+        console.log(`[DEBUG LOGGER] ${code}`, message);
+      }
     },
   },
-  pages: {}, //override specifict custom page
+  pages: {
+    signIn: '/',
+    signOut: '/signedOut',
+  },
   secret: CLIENT_SECRET,
   session: {
-    //generateSessionToken: () => "", // Generate custom session for database- based session
     strategy: 'jwt',
   },
   trustHost: true,
-  //experimental: {}, // 실험적인 기능을 확용해보는 데 사용한다
-  // jwt: {},  //setting jwt option
-  //redirectProxyUrl: "", // 자신의 홈페이지가 아닌 다른 proxy 홈페이지로 리다이렉트가 필요할 때 사용한다.
-  // basePath: '/account/login',
+
   providers: [],
 };
 
 export default authConfig;
+
+//#region The Other Options
+//experimental: {}, // 실험적인 기능을 확용해보는 데 사용한다
+//jwt: {},  //setting jwt option
+//redirectProxyUrl: "", // 자신의 홈페이지가 아닌 다른 proxy 홈페이지로 리다이렉트가 필요할 때 사용한다.
+//basePath: '/account/login',
+//generateSessionToken: () => "", // Generate custom session for database- based session
+//#endregion The Other Options
