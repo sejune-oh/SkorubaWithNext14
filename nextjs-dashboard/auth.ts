@@ -13,13 +13,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: 'CloudHospitalAdminClient',
       clientSecret: 'CloudHospitalAdminClientSecret',
       issuer: `${process.env.auth_duendeidentityserver6_issuer}`,
-
       wellKnown: `${process.env.auth_duendeidentityserver6_issuer}/.well-known/openid-configuration`,
       userinfo: {
         url: `${process.env.auth_duendeidentityserver6_issuer}/connect/userinfo`,
       },
       token: {
         url: `${process.env.auth_duendeidentityserver6_issuer}/connect/token`,
+      },
+      authorization: {
+        params: process.env.AUTH_DUENDEIDENTITYSERVER6_SCOPE,
+        redirect_uri: 'http://localhost:3000/api/auth/callback/CloudHospital',
       },
       async profile(profile, token) {
         return {
