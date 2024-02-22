@@ -1,11 +1,17 @@
 ﻿{
     "Serilog": {
-        "MinimumLevel": {
-            "Default": "Error",
-            "Override": {
-                "Skoruba": "Information"
-            }
-        },
+      "MinimumLevel": {
+        "Default": "Debug",
+        //"Default": "Error",
+        "Override": {
+          //dev
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information",
+          "Microsoft.AspNetCore.Authentication": "Debug",
+          "System": "Warning",
+          "Skoruba": "Information"
+        }
+      },
         "WriteTo": [
             {
                 "Name": "Console"

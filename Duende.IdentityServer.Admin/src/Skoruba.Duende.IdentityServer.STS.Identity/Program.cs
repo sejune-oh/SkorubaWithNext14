@@ -89,9 +89,20 @@ namespace Skoruba.Duende.IdentityServer.STS.Identity
                 })
                 .UseSerilog((hostContext, loggerConfig) =>
                 {
-                    loggerConfig
+                    var env = hostContext.HostingEnvironment;
+                    if(env.IsDevelopment()) {
+                        loggerConfig
+                         .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
+                         .Enrich.FromLogContext()
+                         .ReadFrom.Configuration(hostContext.Configuration);
+                    }
+                    else
+                    {
+                        loggerConfig
                         .ReadFrom.Configuration(hostContext.Configuration)
                         .Enrich.WithProperty("ApplicationName", hostContext.HostingEnvironment.ApplicationName);
+                    }
+                    
                 });
     }
 }

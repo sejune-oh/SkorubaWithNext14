@@ -14,6 +14,7 @@ using Skoruba.Duende.IdentityServer.STS.Identity.Configuration.Constants;
 using Skoruba.Duende.IdentityServer.STS.Identity.Configuration.Interfaces;
 using Skoruba.Duende.IdentityServer.STS.Identity.Helpers;
 
+
 namespace Skoruba.Duende.IdentityServer.STS.Identity
 {
     public class Startup
@@ -60,7 +61,8 @@ namespace Skoruba.Duende.IdentityServer.STS.Identity
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCookiePolicy();
-
+            app.UseHttpLogging();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
