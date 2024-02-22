@@ -15,7 +15,6 @@ using Microsoft.OpenApi.Models;
 using Skoruba.AuditLogging.EntityFramework.Entities;
 using Skoruba.Duende.IdentityServer.Admin.Api.Configuration;
 using Skoruba.Duende.IdentityServer.Admin.Api.Configuration.Authorization;
-using Skoruba.Duende.IdentityServer.Admin.Api.Configuration.Constants;
 using Skoruba.Duende.IdentityServer.Admin.Api.ExceptionHandling;
 using Skoruba.Duende.IdentityServer.Admin.Api.Helpers;
 using Skoruba.Duende.IdentityServer.Admin.Api.Mappers;
