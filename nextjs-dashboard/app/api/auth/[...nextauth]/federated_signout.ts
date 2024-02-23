@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
 import { NextRequest, NextResponse } from 'next/server';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -38,5 +39,6 @@ export async function GET(request: NextApiRequest, response: NextApiResponse) {
 
 export async function POST(request: NextApiRequest, response: NextApiResponse) {
   try {
+    const session = await getSession();
   } catch (error) {}
 }

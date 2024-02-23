@@ -8,7 +8,11 @@ declare module 'next-auth' {
     user: {
       /** The user's postal address. */
       address: string;
+      user_id?: string;
+      user_email?: string;
     };
+    access_token?: string | unknown;
+    id_token?: string | unknown;
   }
 }
 

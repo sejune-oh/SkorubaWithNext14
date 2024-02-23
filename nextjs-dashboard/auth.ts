@@ -32,7 +32,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async profile(profile, token) {
         const { access_token } = token;
-        console.log('[DEBUG]', profile);
 
         try {
           // get user info
@@ -62,6 +61,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         return profile;
       },
+
       //#region the other options
       // account: () => {},
       // checks: ['pkce'],
