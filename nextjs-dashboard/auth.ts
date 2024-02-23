@@ -1,12 +1,14 @@
 import NextAuth, { User } from 'next-auth';
 import DuendeIdentityServer6 from 'next-auth/providers/duende-identity-server6';
-import authConfig from './app/auth.config';
-import axios from 'axios';
+import authConfig from './auth.config';
 
 //! active when test on local environment
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-const issuer = process.env.AUTH_DUENDEIDENTIYSERVER6_ISSUER;
+const issuer = process.env.STS_ISSUER;
+const clientId = process.env.STS_CLIENT_ID;
+const clientSecret = process.env.STS_CLIENT_SECRET;
+const scope = process.env.STS_SCOPE;
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -14,8 +16,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     DuendeIdentityServer6({
       id: 'cloudhospital',
       name: 'CloudHospital',
-      clientId: process.env.AUTH_DUENDEIDENTIYSERVER6_CLIENT_ID,
-      clientSecret: process.env.AUTH_DUENDEIDENTIYSERVER6_CLIENT_SECRET,
+      clientId,
+      clientSecret,
       issuer: `${issuer}`,
       wellKnown: `${issuer}/.well-known/openid-configuration`,
       userinfo: {
@@ -26,40 +28,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       authorization: {
         params: {
-          scope: process.env.AUTH_DUENDEIDENTITYSERVER6_SCOPE,
+          scope,
         },
         redirect_uri: 'http://localhost:3000/api/auth/callback/CloudHospital',
       },
       async profile(profile, token) {
-        const { access_token } = token;
+        const user: User = {
+          id: profile.sub,
+          role: profile.role,
+          name: profile.name,
+          email: profile.email,
+          email_verified: profile.email_verified,
+        };
 
-        try {
-          // get user info
-          const res = await axios({
-            method: 'GET',
-            headers: {
-              Accept: '*/*',
-              Authorization: `Bearer ${access_token}`,
-            },
-            url: `${issuer}/connect/userinfo`,
-          });
-          const userInfo = res.data;
-
-          const user: User = {
-            id: profile.sub,
-            role: userInfo.role,
-            name: userInfo.name,
-            email: userInfo.email,
-            preferred_username: userInfo.preferred_username,
-            email_verified: userInfo.email_verified,
-          };
-
-          return user;
-        } catch (error) {
-          console.log(error);
-        }
-
-        return profile;
+        return user;
       },
 
       //#region the other options

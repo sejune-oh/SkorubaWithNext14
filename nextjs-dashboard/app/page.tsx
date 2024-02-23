@@ -8,22 +8,18 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Page() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
-  const signInBtnHandler = async () => {
-    try {
-      await signIn('cloudhospital');
-    } catch (error) {
-      console.log('[Sign in ERROR]:', error);
-    }
-  };
-
   useEffect(() => {
-    if (session) {
+    if (status === 'authenticated') {
       router.push('/dashboard');
     }
-  }, [session]);
+  }, [session, router, status]);
+
+  if (status === 'loading') {
+    return <div>Loading....</div>;
+  }
 
   return (
     <main className="flex min-h-screen flex-col p-6">
@@ -41,11 +37,13 @@ export default function Page() {
           </p>
           {/* CSS module import */}
           <div className={style.shape}></div>
-          {/* Tailwind */}
-          {/* <div className="h-0 w-0 border-b-[30px] border-l-[20px] border-r-[20px] border-b-black border-l-transparent border-r-transparent" /> */}
           <button
             className='md:text-base" flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400'
-            onClick={signInBtnHandler}
+            // onClick={signInBtnHandler}
+            onClick={async (e) => {
+              e.preventDefault();
+              await signIn('cloudhospital');
+            }}
           >
             Log in
           </button>

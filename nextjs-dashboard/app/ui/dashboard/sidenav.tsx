@@ -3,31 +3,21 @@ import NavLinks from '@/app/ui/dashboard/nav-links';
 import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { signOut, useSession } from 'next-auth/react';
-import axios from 'axios';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function SideNav() {
-  const { data: session } = useSession();
-  const onSignedOutClickHandler = async () => {
-    try {
-      if (session?.id_token) {
-        const res = axios({
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          url: '/api/auth/federated_signout',
-        });
-      } else {
-        await signOut();
-      }
-    } catch (error) {
-      console.log('[ERROR]', error);
-    }
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const onSignedOutClickHandler = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    await signOut();
   };
 
   useEffect(() => {
-    console.log('[CLIENT SIDE]', session);
+    if (!session) router.push('/');
   }, [session]);
 
   return (
@@ -44,12 +34,23 @@ export default function SideNav() {
         <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form>
-          <button
+          {/* <button
             className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
             onClick={onSignedOutClickHandler}
           >
             <PowerIcon className="w-6" />
-            Signed Out
+            Sign Out
+          </button> */}
+          <button
+            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/api/auth/federated_signout';
+            }}
+            // onClick={onSignedOutClickHandler}
+          >
+            <PowerIcon className="w-6" />
+            Sign Out
           </button>
         </form>
       </div>

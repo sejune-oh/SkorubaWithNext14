@@ -1,5 +1,4 @@
-import type { NextAuthConfig, Session } from 'next-auth';
-import { CLIENT_SECRET } from './lib/constants';
+import type { NextAuthConfig, Session, User } from 'next-auth';
 
 const authConfig: NextAuthConfig = {
   callbacks: {
@@ -21,11 +20,9 @@ const authConfig: NextAuthConfig = {
       }
     },
     async signIn({ user, account, profile, email, credentials }) {
-      //! 1
       return user ? true : false;
     },
     async session(params) {
-      //! 3
       const { session, token, user, trigger } = params;
 
       if (token) {
@@ -47,7 +44,6 @@ const authConfig: NextAuthConfig = {
       return baseUrl;
     },
     async jwt(params) {
-      //! 2
       const { token, account, user, profile, session, trigger } = params;
 
       if (account) {
@@ -61,6 +57,7 @@ const authConfig: NextAuthConfig = {
 
         return setToken;
       }
+
       return token;
       // Next step to session callback
     },
@@ -83,16 +80,14 @@ const authConfig: NextAuthConfig = {
       console.log(`[WARN LOGGER] ${code}`, message);
     },
     debug(code, ...message) {
-      if (process.env.AUTH_DEBUGGER_LOGGER === 'active') {
-        // console.log(`[DEBUG LOGGER] ${code}`, message);
-      }
+      if (code === 'user') console.log(`[DEBUG LOGGER] ${code}`, message);
     },
   },
   pages: {
     signIn: '/',
     signOut: '/signedOut',
   },
-  secret: CLIENT_SECRET,
+  secret: process.env.AUTH_SECRET,
   trustHost: true,
   providers: [],
 };

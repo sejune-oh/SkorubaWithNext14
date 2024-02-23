@@ -1,18 +1,15 @@
-import NextAuth from 'next-auth';
+import NextAuth, { DefaultSession } from 'next-auth';
 
 declare module 'next-auth' {
   /**
    * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
    */
   interface Session {
-    user: {
-      /** The user's postal address. */
-      address: string;
-      user_id?: string;
-      user_email?: string;
-    };
-    access_token?: string | unknown;
+    user: DefaultSession['user'] & User;
     id_token?: string | unknown;
+    access_token?: string | unknown;
+    token_type?: string | unknown;
+    refresh_token?: string | unknown;
   }
 }
 
@@ -23,7 +20,6 @@ declare module 'next-auth' {
   interface User {
     phone?: string;
     role?: Array<string> | string;
-    preferred_username?: string;
     email_verified?: boolean;
   }
 }
