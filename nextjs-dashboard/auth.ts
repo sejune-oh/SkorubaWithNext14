@@ -33,15 +33,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         redirect_uri: 'http://localhost:3000/api/auth/callback/CloudHospital',
       },
       async profile(profile, token) {
-        const user: User = {
+        return {
           id: profile.sub,
           role: profile.role,
           name: profile.name,
           email: profile.email,
           email_verified: profile.email_verified,
         };
-
-        return user;
       },
 
       //#region the other options

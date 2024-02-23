@@ -1,4 +1,4 @@
-import type { NextAuthConfig, Session, User } from 'next-auth';
+import type { NextAuthConfig, Session } from 'next-auth';
 
 const authConfig: NextAuthConfig = {
   callbacks: {
@@ -22,6 +22,24 @@ const authConfig: NextAuthConfig = {
     async signIn({ user, account, profile, email, credentials }) {
       return user ? true : false;
     },
+    async jwt(params) {
+      const { token, account, user, profile, session, trigger } = params;
+
+      if (account) {
+        const setToken = {
+          ...token,
+          access_token: account.access_token,
+          id_token: account.id_token,
+          token_type: account.token_type,
+          providerAccountId: account.providerAccountId,
+        };
+
+        return setToken;
+      }
+
+      return token;
+      // Next step to session callback
+    },
     async session(params) {
       const { session, token, user, trigger } = params;
 
@@ -42,24 +60,6 @@ const authConfig: NextAuthConfig = {
       if (url.startsWith(baseUrl)) return url;
       else if (url.startsWith('/')) return new URL(url, baseUrl).toString();
       return baseUrl;
-    },
-    async jwt(params) {
-      const { token, account, user, profile, session, trigger } = params;
-
-      if (account) {
-        const setToken = {
-          ...token,
-          access_token: account.access_token,
-          id_token: account.id_token,
-          token_type: account.token_type,
-          providerAccountId: account.providerAccountId,
-        };
-
-        return setToken;
-      }
-
-      return token;
-      // Next step to session callback
     },
   },
   events: {

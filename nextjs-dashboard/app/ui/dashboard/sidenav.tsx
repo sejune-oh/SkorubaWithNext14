@@ -9,12 +9,6 @@ import { useRouter } from 'next/navigation';
 export default function SideNav() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const onSignedOutClickHandler = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    await signOut();
-  };
 
   useEffect(() => {
     if (!session) router.push('/');
@@ -34,20 +28,14 @@ export default function SideNav() {
         <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <form>
-          {/* <button
-            className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
-            onClick={onSignedOutClickHandler}
-          >
-            <PowerIcon className="w-6" />
-            Sign Out
-          </button> */}
           <button
             className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
             onClick={(e) => {
               e.preventDefault();
-              window.location.href = '/api/auth/federated_signout';
+              // federated logout
+              // window.location.href = '/api/auth/federated_signout';
+              signOut();
             }}
-            // onClick={onSignedOutClickHandler}
           >
             <PowerIcon className="w-6" />
             Sign Out
