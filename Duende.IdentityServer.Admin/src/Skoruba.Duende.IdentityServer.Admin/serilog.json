@@ -1,11 +1,17 @@
 ﻿{
     "Serilog": {
-        "MinimumLevel": {
-            "Default": "Error",
-            "Override": {
-                "Skoruba": "Information"
-            }
-        },
+      "MinimumLevel": {
+        "Default": "Debug",
+        //"Default": "Error",
+        "Override": {
+          //dev
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information",
+          "Microsoft.AspNetCore.Authentication": "Debug",
+          "System": "Warning",
+          "Skoruba": "Information"
+        }
+      },
         "WriteTo": [
             {
                 "Name": "Console"
@@ -19,14 +25,14 @@
             },
             {
                 "Name": "MSSqlServer",
-                "Args": {
-                    "connectionString": "Server=(localdb)\\mssqllocaldb;Database=DuendeIdentityServerAdmin;Trusted_Connection=True;MultipleActiveResultSets=true",
-                    "tableName": "Log",
-                    "columnOptionsSection": {
-                        "addStandardColumns": [ "LogEvent" ],
-                        "removeStandardColumns": [ "Properties" ]
-                    }
+              "Args": {
+                "connectionString": "Server=tcp:chidentitydevdbserver.database.windows.net,1433;Initial Catalog=CloudHospitalIdentity_int_db;Persist Security Info=False;User ID=CHAdmin;Password=KILsus89;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+                "tableName": "Log",
+                "columnOptionsSection": {
+                  "addStandardColumns": [ "LogEvent" ],
+                  "removeStandardColumns": [ "Properties" ]
                 }
+              }
             }
         ]
     }

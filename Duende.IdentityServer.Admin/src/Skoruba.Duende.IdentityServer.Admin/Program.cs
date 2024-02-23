@@ -17,7 +17,7 @@ using Skoruba.Duende.IdentityServer.Shared.Configuration.Helpers;
 
 namespace Skoruba.Duende.IdentityServer.Admin
 {
-	public class Program
+    public class Program
     {
         private const string SeedArgs = "/seed";
         private const string MigrateOnlyArgs = "/migrateonly";
@@ -36,8 +36,8 @@ namespace Skoruba.Duende.IdentityServer.Admin
 
                 var host = CreateHostBuilder(args).Build();
 
-                var migrationComplete = await ApplyDbMigrationsWithDataSeedAsync(args, configuration, host);
-                if (await MigrateOnlyOperationAsync(args, host, migrationComplete)) return;
+                /*var migrationComplete = await ApplyDbMigrationsWithDataSeedAsync(args, configuration, host);
+                if (await MigrateOnlyOperationAsync(args, host, migrationComplete)) return;*/
 
                 await host.RunAsync();
             }
@@ -144,9 +144,21 @@ namespace Skoruba.Duende.IdentityServer.Admin
                 })
                 .UseSerilog((hostContext, loggerConfig) =>
                 {
-                    loggerConfig
+                    var env = hostContext.HostingEnvironment;
+                    if (env.IsDevelopment())
+                    {
+                        loggerConfig
+                         .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
+                         .Enrich.FromLogContext()
+                         .ReadFrom.Configuration(hostContext.Configuration);
+
+                    }else
+                    {
+                        loggerConfig
                         .ReadFrom.Configuration(hostContext.Configuration)
                         .Enrich.WithProperty("ApplicationName", hostContext.HostingEnvironment.ApplicationName);
+                    }
+                        
                 });
     }
 }
